@@ -28,10 +28,7 @@ import numpy as np
 def load_all_data(sample_size):
     
     data = pd.read_csv("data/df_final.csv",nrows=sample_size)
-    #X_train = pd.read_csv("data/X_train_transformed.csv",nrows=sample_size)
     X_test = pd.read_csv("data/X_test_transformed.csv",nrows=sample_size)
-    #train_set = pd.read_csv('data/application_train.csv',nrows=sample_size)
-    #train_set = pd.read_csv("data/X_train_transformed.csv",nrows=sample_size)
     X_train = pd.read_csv("data/X_test_clean.csv",nrows=sample_size)
     y_pred_test_export = pd.read_csv("data/y_pred_test_export.csv")
 
@@ -41,8 +38,6 @@ def load_all_data(sample_size):
     data['age_bins'] = (pd.cut(data['DAYS_BIRTH'], bins=bins)).astype(str)
 
     
- 
-        
     return data ,y_pred_test_export,train_set
 
 #------------- Affichage des infos client en HTML------------------------------------------
@@ -178,8 +173,8 @@ def predict_client_par_ID(model_to_use,id_client):
     return y_pred,y_proba
 
 def get_sk_id_list():
-        API_URL = "http://127.0.0.1:5000/api/"
-        # https://app-p7-4.herokuapp.com/api/
+        # API_URL = "http://127.0.0.1:5000/api/"
+        API_URL = https://app-p7-4.herokuapp.com/api/
         
         # URL of the sk_id API
         SK_IDS_API_URL = API_URL + "sk_ids/"
@@ -254,7 +249,8 @@ def education_type(train_set):
 
 
 def main():
-    API_URL = "http://127.0.0.1:5000/api/"
+    # API_URL = "http://127.0.0.1:5000/api/"
+    API_URL = https://app-p7-4.herokuapp.com/api/
 # LIST OF SK_ID_CURR
     # Get list of SK_IDS (cached)
     def get_sk_id_list():
