@@ -1,1 +1,1 @@
-web: gunicorn dashboard.py:app
+web: gunicorn api.py:app
