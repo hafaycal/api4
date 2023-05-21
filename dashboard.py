@@ -25,20 +25,6 @@ import shap
 from streamlit_shap import st_shap
 import numpy as np
 ###---------- load data -------- 
-def load_all_data(sample_size):
-    
-    data = pd.read_csv("data/df_final.csv",nrows=sample_size)
-    X_test = pd.read_csv("data/X_test_transformed.csv",nrows=sample_size)
-    X_train = pd.read_csv("data/X_test_clean.csv",nrows=sample_size)
-    y_pred_test_export = pd.read_csv("data/y_pred_test_export.csv")
-
-    #Preparation des données age
-    data['DAYS_BIRTH']= data['DAYS_BIRTH']/-365
-    bins= [0,10,20,30,40,50,60,70,80]
-    data['age_bins'] = (pd.cut(data['DAYS_BIRTH'], bins=bins)).astype(str)
-
-    
-    return data ,y_pred_test_export,train_set
 
 #------------- Affichage des infos client en HTML------------------------------------------
 def display_client_info(id,revenu,age,nb_ann_travail):
@@ -126,10 +112,6 @@ def load_preprocessor():
     preproc = pickle.load(open("models/preprocessor.sav", 'rb'))
     return preproc
 
-'''Transformer X avec le preprocessor '''
-def preprocessing(X):
-    preprocessor  = load_preprocessor()
-    return preprocessor.transform(X)
 
 '''Charger un modele entrainné '''
 def load_model(model_to_load):
@@ -158,7 +140,7 @@ def predict_client(model,X):
 
 '''Prédire un client par son ID dans le dataset '''
 def predict_client_par_ID(model_to_use,id_client):
-    sample_size= 20000
+    sample_size= 2000
     data_set = load_dataset(sample_size)
     client=data_set[data_set['SK_ID_CURR']==id_client].drop(['SK_ID_CURR','TARGET'],axis=1)
     print(client)
@@ -249,22 +231,7 @@ def education_type(train_set):
 
 
 def main():
-    # API_URL = "http://127.0.0.1:5000/api/"
-    API_URL = https://app-p7-4.herokuapp.com/api/
-# LIST OF SK_ID_CURR
-    # Get list of SK_IDS (cached)
-    def get_sk_id_list():
-        # URL of the sk_id API
-        SK_IDS_API_URL = API_URL + "sk_ids/"
-        # Requesting the API and saving the response
-        response = requests.get(SK_IDS_API_URL)
-        # Convert from JSON format to Python dict
-        content = json.loads(response.content)
-        # Getting the values of SK_IDS from the content
-        SK_IDS = content['data']
 
-        return SK_IDS
-    
     SK_IDS = get_sk_id_list()
 
     # Logo "Prêt à dépenser"
@@ -272,87 +239,8 @@ def main():
     st.sidebar.image(image, width=280)
     st.title('Tableau de bord - "Prêt à dépenser"')
 
-    # Load the data
-#--------------
-#
-# LOAD DATA
-    data = pd.read_csv("data/df_final.csv", nrows = 10000)  
-    #DAYS_CREDIT = data['DAYS_CREDIT'] 
-    #print (data.head())
-    y_pred_test_export = pd.read_csv("data/y_pred_test_export.csv",nrows = 10000)
-    #Preparation des données age
-    data['DAYS_BIRTH']= data['DAYS_BIRTH']/-365
-    bins= [0,10,20,30,40,50,60,70,80]
-    data['age_bins'] = (pd.cut(data['DAYS_BIRTH'], bins=bins)).astype(str)
-
-    train_set = pd.read_csv('data/application_train.csv',nrows = 1000)
-    print (train_set.head())
-    #################################################
-    # LIST OF SK_ID_CURR
-    #Get list of SK_IDS (cached)
     ### Title
     st.title('Home Credit Default Risk')
-
-    ### Sidebar
-    st.sidebar.title("Menus")
-    sidebar_selection = st.sidebar.radio(
-        'Select Menu:',
-        ['Overview', 'Data Analysis', 'Model & Prediction', 'Prédire solvabilité client'],
-    )
-
-    if sidebar_selection == 'Overview':
-        selected_item =""
-        with st.spinner('Data load in progress...'):
-            time.sleep(2)
-        st.success('Data loaded')
-        show_data(data) 
-        #show_overview(data)   
-
-    if sidebar_selection == 'Data Analysis':
-        selected_item = st.sidebar.selectbox('Select Menu:', 
-                                    ('Graphs', 'Distributions'))
-
-    if sidebar_selection == 'Model & Prediction':
-        selected_item = st.sidebar.selectbox('Select Menu:', 
-                                        ( 'Prediction','Model'))
-
-    if sidebar_selection == 'Prédire solvabilité client':
-        selected_item="predire_client"
-
-    seuil_risque = st.sidebar.slider("Seuil de Solvabilité", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
-
-    if selected_item == 'Data':
-        show_data(data)  
-
-    #if selected_item == 'Solvency':
-        #show_overview (data)
-        
-    if selected_item == 'Graphs':
-        #hist_graph()
-        is_educ_selected,is_statut_selected,is_income_selected = filter_graphs()
-        if(is_educ_selected=="oui"):
-            education_type(train_set)
-        if(is_statut_selected=="oui"):
-            statut_plot()
-        if(is_income_selected=="oui"):  
-            income_type()
-
-    if selected_item == 'Distributions':
-        is_age_selected,is_incomdis_selected = filter_distribution()
-        if(is_age_selected=="oui"):
-            age_distribution()
-        if(is_incomdis_selected=="oui"):
-            revenu_distribution()     
-
-    if selected_item == 'Prediction':
-        show_client_predection(data)
-
-    if selected_item == 'Model':
-        show_model_analysis(data)
-
-    if selected_item == 'predire_client':
-        show_client_prediction(data)
-
 
     ##################################################
     # Selecting applicant ID
@@ -536,4 +424,4 @@ if __name__ == "__main__":
 
 
 def test_load():
-    assert load_dataset(1).size == 5000  
+    assert load_dataset(1).size == 500  
