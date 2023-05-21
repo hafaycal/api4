@@ -179,7 +179,8 @@ def predict_client_par_ID(model_to_use,id_client):
 
 def get_sk_id_list():
         API_URL = "http://127.0.0.1:5000/api/"
-
+        # https://app-p7-4.herokuapp.com/api/
+        
         # URL of the sk_id API
         SK_IDS_API_URL = API_URL + "sk_ids/"
 
